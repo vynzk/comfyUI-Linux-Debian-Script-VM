@@ -14,9 +14,9 @@ echo "Install dir: ${INSTALL_DIR}"
 echo
 
 # Basic deps
-echo "==> Installing basic dependencies (git, curl)..."
+echo "==> Installing basic dependencies (git, curl, python3-venv)..."
 sudo apt-get update -y
-sudo apt-get install -y git curl ca-certificates
+sudo apt-get install -y git curl ca-certificates python3-pip python3-venv
 
 mkdir -p "${INSTALL_DIR}"
 cd "${INSTALL_DIR}"
@@ -32,40 +32,29 @@ else
   cd "${INSTALL_DIR}/ComfyUI"
 fi
 
-# Install uv if not present
-if ! command -v uv >/dev/null 2>&1; then
-  echo "==> Installing uv..."
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-
-# Ensure uv env is in PATH for this shell
-if [ -f "${HOME}/.local/bin/env" ]; then
-  # shellcheck disable=SC1090
-  source "${HOME}/.local/bin/env"
-fi
-
-UV_PATH="$(command -v uv)"
-echo "==> uv found at: ${UV_PATH}"
-
 # Create venv if not exists
 if [ ! -d ".venv" ]; then
   echo "==> Creating virtual environment (.venv)..."
-  uv venv
+  python3 -m venv .venv
 else
   echo "==> .venv already exists. Skipping venv creation."
 fi
 
+# Activate venv
+echo "==> Activating virtual environment..."
+source .venv/bin/activate
+
 # Install PyTorch + deps
 echo "==> Installing PyTorch (NVIDIA CUDA 12.9 wheels: cu129)..."
-uv pip install --upgrade pip
-uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
+pip install --upgrade pip
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
 
 # AMD option (commented)
 # echo "==> Installing PyTorch for AMD ROCm 6.4..."
-# uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
 echo "==> Installing ComfyUI requirements..."
-uv pip install -r requirements.txt
+pip install -r requirements.txt
 
 # Create systemd service
 echo "==> Creating systemd service: ${SERVICE_NAME}.service"
@@ -83,7 +72,7 @@ After=network.target
 Type=simple
 User=${USER_NAME}
 WorkingDirectory=${WORKDIR}
-ExecStart=${UV_PATH} run main.py --listen ${LISTEN_ADDR}
+ExecStart=${WORKDIR}/.venv/bin/python main.py --listen ${LISTEN_ADDR}
 Restart=always
 RestartSec=5
 Environment=PYTHONUNBUFFERED=1
