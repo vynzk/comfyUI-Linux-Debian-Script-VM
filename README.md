@@ -1,4 +1,4 @@
-# comfyUI-Linux-Debian-Script-VM
+
 # ComfyUI Auto Installer + Autorun (Linux)
 
 Este repositorio/script instala **ComfyUI** desde cero y lo configura para que **se inicie automáticamente** cada vez que arranca la máquina virtual usando **systemd**.
@@ -75,7 +75,7 @@ Edita el script install y descomenta:
 
 Y comenta la línea de NVIDIA.
 
-🧠 Detalles técnicos
+## 🧠 Detalles técnicos
 
 El servicio usa:
 
@@ -102,3 +102,14 @@ which uv
 
 El script ya usa la ruta absoluta automáticamente
 
+# Cómo instalar modelos rápidamente
+aplica
+```
+chmod +x install_models.sh #sólo una vez
+
+```
+luego ejecuta cuando necesites
+```
+./install_models
+```
+copia las URLs solicitadas en cada línea y cuando termines aplica doble enter para que las descargue
