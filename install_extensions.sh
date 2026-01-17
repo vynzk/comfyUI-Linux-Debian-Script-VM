@@ -56,7 +56,10 @@ pip install -r custom_nodes/was-node-suite-comfyui/requirements.txt
 echo "==> Installing WAS_Extras..."
 [ -d "custom_nodes/WAS_Extras" ] && rm -rf "custom_nodes/WAS_Extras"
 git clone https://github.com/WASasquatch/WAS_Extras custom_nodes/WAS_Extras
-python custom_nodes/WAS_Extras/install.py
+if [ -f "custom_nodes/WAS_Extras/requirements.txt" ]; then
+	echo "==> Installing WAS_Extras Python dependencies..."
+	pip install -r custom_nodes/WAS_Extras/requirements.txt
+fi
 
 #sdxl_prompt_styler
 echo "==> Installing sdxl_prompt_styler..."
