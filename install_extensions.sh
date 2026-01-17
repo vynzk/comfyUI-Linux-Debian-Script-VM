@@ -12,6 +12,15 @@ echo
 mkdir -p "${INSTALL_DIR}/models/facerestore_models"
 cd "${INSTALL_DIR}"
 
+# Activate ComfyUI virtual environment (created by install.sh)
+if [ -d ".venv" ]; then
+	echo "==> Activating virtual environment (.venv)..."
+	# shellcheck disable=SC1091
+	source .venv/bin/activate
+else
+	echo "WARNING: .venv not found in ${INSTALL_DIR}. Using system Python/pip (may require --break-system-packages)."
+fi
+
 #COMFY MANAGER
 echo "==> Installing ComfyUI-Manager..."
 [ -d "custom_nodes/ComfyUI-Manager" ] && rm -rf "custom_nodes/ComfyUI-Manager"
