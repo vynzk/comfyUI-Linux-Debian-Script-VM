@@ -18,7 +18,9 @@ if [ -d ".venv" ]; then
 	# shellcheck disable=SC1091
 	source .venv/bin/activate
 else
-	echo "WARNING: .venv not found in ${INSTALL_DIR}. Using system Python/pip (may require --break-system-packages)."
+	echo "ERROR: .venv not found in ${INSTALL_DIR}."
+	echo "Please run install.sh first to create the virtual environment, then rerun install_extensions.sh."
+	exit 1
 fi
 
 #COMFY MANAGER
@@ -87,5 +89,8 @@ wget https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pt
 
 #git clone https://github.com/pydn/ComfyUI-to-Python-Extension.git
 #pip install -r ComfyUI-to-Python-Extension/requirements.txt
+
+echo "==> Forcing compatible numpy/opencv versions (inside venv)..."
+pip install --force-reinstall 'numpy>=2,<2.3' opencv-python==4.12.0.88 opencv-python-headless==4.12.0.88
 
 echo "==> Extensions installation complete!"
